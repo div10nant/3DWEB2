@@ -1,0 +1,46 @@
+@font-face {
+    font-family: 'DreamerTM';
+    src: url(./DreamerTM-Regular.ttf) format('');
+}
+
+
+.jacquard-12-regular {
+  font-family: "Jacquard 12", system-ui;
+  font-weight: 400;
+  font-style: normal;
+}
+body {
+    background-color: black; 
+}
+h1 {
+    font-family: "DreamerTM", "Jacquard 12";
+    font-size: 250px;
+    color: ghostwhite;
+    text-align: center;
+margin:auto;}
+h2 {
+    font-family: "DreamerTM", "Jacquard 12";
+    font-size: 10px;
+    color: ghostwhite;
+    text-align: center;
+}
+p {
+    color: white;
+    text-align: center;
+    margin: auto;
+    margin-left: 20%;
+    margin-right: 20%;
+}
+
+p2 {
+    color: white;
+    text-align: center;
+    margin: auto;
+}
+
+a{
+    color: white;
+    text-align: center;
+    margin: auto;
+}
+

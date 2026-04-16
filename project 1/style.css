@@ -1,0 +1,27 @@
+body {
+    background-color: black;
+}
+
+a {
+
+    font-family: "Courier New", monospace; 
+    color: white;
+    border-style: none;
+    font-size: small;
+    text-decoration: none;
+}
+
+
+button {
+    position: absolute;
+    top: 400px;
+    left: 50%;
+    background-color: transparent;
+    font-family: "Courier New", monospace; 
+    color: white;
+    border-style: none;
+
+}
+
+
+

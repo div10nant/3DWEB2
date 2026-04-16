@@ -1,0 +1,381 @@
+// Room Example Three.js Example
+// Chelsea Thompto - Spring 2026
+
+// Three.js uses an import map to add features.
+// The "import * as THREE from 'three';" will be
+// in all sketches. Add-ons will be added after.
+
+// The main library script
+import * as THREE from "three";
+
+// The plug-ins
+import { PointerLockControls } from "../src/PointerLockControls.js";
+import { Font } from "../src/FontLoader.js";
+import { TTFLoader } from "../src/TTFLoader.js";
+import { TextGeometry } from "../src/TextGeometry.js";
+import { GLTFLoader } from "../src/GLTFLoader.js";
+import { OBJLoader } from "../src/OBJLoader.js";
+import { MTLLoader } from "../src/MTLLoader.js";
+// Declaring global variables.
+let camera, canvas, controls, scene, renderer;
+
+// Variables for First Person Controls
+let raycaster;
+let moveForward = false;
+let moveBackward = false;
+let moveLeft = false;
+let moveRight = false;
+let canJump = true;
+let prevTime = performance.now();
+const velocity = new THREE.Vector3();
+const direction = new THREE.Vector3();
+
+// Variables for Room
+let font;
+let text = "Room Demo";
+let textGeo;
+let materials;
+let textMesh1;
+let textMesh2;
+let group;
+let mesh;
+
+// Run the "init" function which is like "setup" in p5.
+init();
+
+// Define initial scene
+    function init() {
+    // scene setup
+    canvas = document.getElementById("3-holder");
+    scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x000000);
+
+    ////model
+    //const mtlLoader = new MTLLoader().setPath("../assets/obj_mtl_ex/");
+    //// this loads the model
+    //const materials = await mtlLoader.loadAsync("dog.mtl");
+    //materials.preload();
+
+    //// OBJ loading
+    //// this sets the path to where the file is
+    //const objLoader = new OBJLoader().setPath("../assets/obj_mtl_ex/");
+    //// this adds MTL file to the model if you have it
+    //objLoader.setMaterials(materials); // optional since OBJ assets can be loaded without an accompanying MTL file
+    //// this loads the model
+    //const object = await objLoader.loadAsync("dog.obj");
+//
+    //// position scale and add model to scene
+    //object.position.y = -0.95;
+    //object.scale.setScalar(0.01);
+    //scene.add(object);
+
+    //
+
+    //scene.fog = new THREE.FogExp2(0xbfeff5, 0.0015);
+    renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(innerWidth, innerHeight);
+    renderer.setAnimationLoop(animate);
+    canvas.appendChild(renderer.domElement);
+
+    // Setup camera
+    camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 1000);
+    camera.position.set(0, 10, 0);
+
+    // Setup First Person Controls
+    // DO NOT TOUCH
+
+    controls = new PointerLockControls(camera, document.body);
+
+    const blocker = document.getElementById("blocker");
+    const instructions = document.getElementById("instructions");
+
+    instructions.addEventListener("click", function () {
+        controls.lock();
+    });
+
+    controls.addEventListener("lock", function () {
+        instructions.style.display = "none";
+        blocker.style.display = "none";
+    });
+
+    controls.addEventListener("unlock", function () {
+        blocker.style.display = "block";
+        instructions.style.display = "";
+    });
+
+    scene.add(controls.object);
+
+    const onKeyDown = function (event) {
+        switch (event.code) {
+            case "ArrowUp":
+            case "KeyW":
+                moveForward = true;
+                break;
+
+            case "ArrowLeft":
+            case "KeyA":
+                moveLeft = true;
+                break;
+
+            case "ArrowDown":
+            case "KeyS":
+                moveBackward = true;
+                break;
+
+            case "ArrowRight":
+            case "KeyD":
+                moveRight = true;
+                break;
+
+            case "Space":
+                if (canJump === true) velocity.y += 350;
+                canJump = false;
+                break;
+        }
+    };
+
+    const onKeyUp = function (event) {
+        switch (event.code) {
+            case "ArrowUp":
+            case "KeyW":
+                moveForward = false;
+                break;
+
+            case "ArrowLeft":
+            case "KeyA":
+                moveLeft = false;
+                break;
+
+            case "ArrowDown":
+            case "KeyS":
+                moveBackward = false;
+                break;
+
+            case "ArrowRight":
+            case "KeyD":
+                moveRight = false;
+                break;
+        }
+    };
+
+    document.addEventListener("keydown", onKeyDown);
+    document.addEventListener("keyup", onKeyUp);
+
+    raycaster = new THREE.Raycaster(new THREE.Vector3(), new THREE.Vector3(0, -1, 0), 0, 10);
+
+    // End First Person Controls
+
+    // Add world geometry
+
+    // room material
+    const wall = new THREE.MeshPhongMaterial({ color: 0xd7d5d6 });
+
+    // back wall
+    const shortWall = new THREE.BoxGeometry(150, 100, 10);
+    const backWall = new THREE.Mesh(shortWall, wall);
+    backWall.position.set(0, 0, -700);
+    scene.add(backWall);
+
+    //front wall that blocks from escaping
+    const front2Wall = new THREE.Mesh(shortWall, wall);
+    front2Wall.position.set(0, 0, -70);
+    scene.add(front2Wall);
+
+    // side walls
+    const longWall = new THREE.BoxGeometry(10, 100, 810);
+    const leftWall = new THREE.Mesh(longWall, wall);
+    leftWall.position.set(-70, 0, -450);
+    scene.add(leftWall);
+
+    const rightWall = new THREE.Mesh(longWall, wall);
+    rightWall.position.set(70, 0, -450);
+    scene.add(rightWall);
+
+    // front walls
+    const frontSide = new THREE.BoxGeometry(50, 100, 10);
+    const frontLeft = new THREE.Mesh(frontSide, wall);
+    frontLeft.position.set(-50, 0, -200);
+    scene.add(frontLeft);
+
+    const frontRight = new THREE.Mesh(frontSide, wall);
+    frontRight.position.set(50, 0, -200);
+    scene.add(frontRight);
+
+    //const frontTop = new THREE.BoxGeometry(100, 57.5, 10);
+    //const frontMiddle = new THREE.Mesh(frontTop, wall);
+    //frontMiddle.position.set(0, 70, -200);
+    //scene.add(frontMiddle);
+
+    // ceiling
+
+    const ceilingMat = new THREE.MeshPhongMaterial({ color: 0xd7d5d6 });
+    const ceilingShape = new THREE.BoxGeometry(150, 20, 910);
+    const ceilingMain = new THREE.Mesh(ceilingShape, ceilingMat);
+    ceilingMain.position.set(0, 60, -450);
+    scene.add(ceilingMain);
+
+    //closet pole
+    const poleMat = new THREE.MeshPhongMaterial({ color: 0x5c5c5c });
+    const poleShape = new THREE.CylinderGeometry(3, 3, 148);
+    const poleMain = new THREE.Mesh(poleShape, poleMat);
+    poleMain.position.set(0, 40, -230);
+    poleMain.rotateX(1.5708);
+    poleMain.rotateZ(1.5708);
+    scene.add(poleMain);
+
+    ////ground plane
+    //const groundMat = new THREE.MeshPhongMaterial({ color: 0xb76767 });
+    //const groundShape = new THREE.PlaneGeometry(300,300,0);
+    //const groundMain = new THREE.Mesh(groundShape, groundMat);
+    //groundMain.position.set(-100, 0, 0);
+    //scene.add(groundMain);
+    //groundMain.rotateX(1.5708);
+
+    // model
+
+    // material for model
+    var newMat = new THREE.MeshPhongMaterial({
+        color: 0x00c00f,
+        specular: 0xbbbbbb,
+        shininess: 100
+    });
+
+    const loader2 = new GLTFLoader().load(
+        "../assets/coathanger.gltf",
+        function (gltf) {
+            // Scan loaded model for mesh and apply defined material if mesh is present
+            gltf.scene.traverse(function (child) {
+                if (child.isMesh) {
+                    child.material = newMat;
+                }
+            });
+            // set position and scale
+            mesh = gltf.scene;
+            mesh.position.set(0, 40, -230);
+            mesh.scale.set(0.4, 0.4, 0.4);
+            // Add model to scene
+            scene.add(mesh);
+        },
+        undefined,
+        function (error) {
+            console.error(error);
+        }
+    );
+
+    // load image as a texture
+    const imgSource = new THREE.TextureLoader().load("../assets/cab-curio-1.jpg");
+    // use loaded testure in a material
+    const imgMaterial = new THREE.MeshBasicMaterial({
+        map: imgSource,
+        side: THREE.DoubleSide
+    });
+
+    //// Ground
+    //const earth = new THREE.PlaneGeometry(4000, 4000);
+    //const ground = new THREE.MeshPhongMaterial({ color: 0x2d2d2d, flatShading: true });
+    //const mesh2 = new THREE.InstancedMesh(earth, ground, 500);
+    //mesh2.translateY(-80);
+    //mesh2.rotateX(-1.5708);
+    //scene.add(mesh2);
+
+    // lights
+    const dirLight1 = new THREE.DirectionalLight(0xffffff, 3);
+    dirLight1.position.set(1, 1, 1);
+    scene.add(dirLight1);
+
+    const dirLight2 = new THREE.DirectionalLight(0xffffff, 2);
+    dirLight2.position.set(-1, -1, -1);
+    scene.add(dirLight2);
+
+    const ambientLight = new THREE.AmbientLight(0x555555);
+    scene.add(ambientLight);
+}
+
+// Function to update moving objects, in this case the camera.
+// The render function is trigger at the end to update the canvas.
+function animate() {
+    // Start First Person Control Animations
+    const time = performance.now();
+    if (controls.isLocked === true) {
+        const delta = (time - prevTime) / 2000;
+
+        velocity.x -= velocity.x * 30.0 * delta;
+        velocity.z -= velocity.z * 30.0 * delta;
+
+        velocity.y -= 9.8 * 100.0 * delta; // 100.0 = mass
+
+        direction.z = Number(moveForward) - Number(moveBackward);
+        direction.x = Number(moveRight) - Number(moveLeft);
+        direction.normalize(); // this ensures consistent movements in all directions
+
+        if (moveForward || moveBackward) velocity.z -= direction.z * 10000.0 * delta;
+        if (moveLeft || moveRight) velocity.x -= direction.x * 10000.0 * delta;
+
+        controls.moveRight(-velocity.x * delta);
+        controls.moveForward(-velocity.z * delta);
+
+        // jump fix
+        controls.object.position.y += velocity.y * delta;
+        if (controls.object.position.y < 10) {
+            velocity.y = 0;
+            controls.object.position.y = 10;
+
+            canJump = true;
+        }
+    }
+    if (controls.object.position.x > 60) {
+        controls.object.position.x = 59;
+    } else if (controls.object.position.x < -60) {
+        controls.object.position.x = -59;
+    }
+    if (controls.object.position.z > -100) {
+        controls.object.position.z = -101;
+    } else if (controls.object.position.z < -685) {
+        controls.object.position.z = -684;
+    }
+
+    if (controls.object.position.y > 35) {
+        controls.object.position.y = 35;
+    }
+    prevTime = time;
+    // End First Person Control Animations
+
+    render();
+}
+
+// Function to render the scene using the camera.
+function render() {
+    renderer.render(scene, camera);
+}
+
+// Function to generate text shapes
+function createText() {
+    // create geomtery with parameters, change parameters to test modifications
+    // "text" on next line is the message to be written
+    textGeo = new TextGeometry(text, {
+        font: font,
+        size: 20,
+        depth: 10,
+        curveSegments: 4,
+        bevelThickness: 2,
+        bevelSize: 1.5,
+        bevelEnabled: true
+    });
+
+    // finish making geometry
+    textGeo.computeBoundingBox();
+    const centerOffset = -0.5 * (textGeo.boundingBox.max.x - textGeo.boundingBox.min.x);
+
+    // apply material to geometry
+    textMesh1 = new THREE.Mesh(textGeo, materials);
+
+    // set position and rotation
+    textMesh1.position.x = centerOffset - 70;
+    textMesh1.position.z = -90;
+    textMesh1.position.y = -100;
+    //textMesh1.rotation.z = 1.5708;
+    textMesh1.rotation.y = 1.5708;
+
+    // add to group to be added to scene
+    group.add(textMesh1);
+}

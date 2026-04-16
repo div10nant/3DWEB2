@@ -1,0 +1,13 @@
+body {
+    background-color: black;
+}
+
+.home {
+    
+    left: 50%;
+    background-color: transparent;
+    font-family: "Courier New", monospace; 
+    color: white;
+    border-style: none;
+}
+

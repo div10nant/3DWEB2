@@ -1,0 +1,25 @@
+body{
+    background-color: black;
+}
+
+.lacquer-regular {
+  font-family: "Lacquer", system-ui;
+  font-weight: 400;
+  font-style: normal;
+}
+h1 {
+    margin: auto;
+    text-align: center;
+    font-family: Laquer;
+    color: white;
+}
+
+a {
+    background-color: transparent;
+    font-family: "Courier New", monospace; 
+    color: white;
+    border-style: none;
+}
+canvas {
+    align-content: center;
+}
