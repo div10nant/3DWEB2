@@ -128,23 +128,23 @@ async function init() {
         scene.add(gltf.scene);
     });
     
-     //envelope
+     //letters
      gltfLoader.load("./assets/envelope.gltf", function (gltf) {
-        gltf.scene.position.x = 10;
+        gltf.scene.position.x = 45;
         gltf.scene.position.y = -50;
-        gltf.scene.position.z = -180;
-        gltf.scene.scale.set(40,40,40);
-   gltf.scene.rotateY(-Math.PI/1);
+        gltf.scene.position.z = -450;
+        gltf.scene.scale.set(1,1,1);
+   gltf.scene.rotateY(-Math.PI/2);
         scene.add(gltf.scene);
     });
     
-    //envelope
-     gltfLoader.load("./assets/frame.gltf", function (gltf) {
-        gltf.scene.position.x = -30;
-        gltf.scene.position.y = -35;
-        gltf.scene.position.z = -580;
-        gltf.scene.scale.set(0.3,0.3,0.3);
-   gltf.scene.rotateX(Math.PI/2.5);
+    //frame
+     gltfLoader.load("./assetsS/frame.gltf", function (gltf) {
+        gltf.scene.position.x = 30;
+        gltf.scene.position.y = 35;
+        gltf.scene.position.z = -100;
+        gltf.scene.scale.set(0.5,0.5,0.5);
+    gltf.scene.rotateX(-Math.PI/2.5);
         
         scene.add(gltf.scene);
     });
@@ -360,10 +360,10 @@ function animate() {
             canJump = true;
         }
     }
-    if (controls.object.position.x > 60) {
-        controls.object.position.x = 59;
-    } else if (controls.object.position.x < -60) {
-        controls.object.position.x = -59;
+    if (controls.object.position.x > 5) {
+        controls.object.position.x = 5;
+    } else if (controls.object.position.x < -5) {
+        controls.object.position.x = -5;
     }
     if (controls.object.position.z > -100) {
         controls.object.position.z = -101;
