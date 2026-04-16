@@ -56,9 +56,9 @@ async function init() {
 
     //toothbrush
     gltfLoader.load("./assets/toothbrush.gltf", function (gltf) {
-        gltf.scene.position.x = -10;
+        gltf.scene.position.x = 20;
         gltf.scene.position.y = 10;
-        gltf.scene.position.z = -550;
+        gltf.scene.position.z = -270;
         gltf.scene.scale.set(3, 3, 3);
         gltf.scene.rotateX(Math.PI / 2.5);
         gltf.scene.rotateY(-Math.PI / 2.5);
@@ -90,16 +90,16 @@ async function init() {
      gltfLoader.load("./assets/dog.gltf", function (gltf) {
         gltf.scene.position.x = -50;
         gltf.scene.position.y = -50;
-        gltf.scene.position.z = -350;
+        gltf.scene.position.z = -280;
         gltf.scene.scale.set(0.8,0.8, 0.8);
         gltf.scene.rotateX(-Math.PI / 2);
-           gltf.scene.rotateZ(Math.PI / 2);
+        gltf.scene.rotateZ(Math.PI / 2);
         scene.add(gltf.scene);
     });
     
     //hanger left
    gltfLoader.load("./assets/hanger.gltf", function (gltf) {
-        gltf.scene.position.x = -75;
+        gltf.scene.position.x = -105;
         gltf.scene.position.y = 8;
         gltf.scene.position.z = -200;
         gltf.scene.scale.set(3.5,3.5,3.5);
@@ -107,16 +107,48 @@ async function init() {
            gltf.scene.rotateZ(Math.PI / 2);
         scene.add(gltf.scene);
     });
-     //hanger left
+     //hanger RIGHT
    gltfLoader.load("./assets/hanger.gltf", function (gltf) {
-        gltf.scene.position.x = -20;
+        gltf.scene.position.x = 0;
         gltf.scene.position.y = 8;
         gltf.scene.position.z = -200;
         gltf.scene.scale.set(3.5,3.5,3.5);
         gltf.scene.rotateX(-Math.PI / 2);
-           gltf.scene.rotateZ(Math.PI / 2);
+        gltf.scene.rotateZ(Math.PI / 2);
         scene.add(gltf.scene);
     });
+    
+    //CLOSET DOOR
+     gltfLoader.load("./assets/door.gltf", function (gltf) {
+        gltf.scene.position.x = 10;
+        gltf.scene.position.y = -50;
+        gltf.scene.position.z = -180;
+        gltf.scene.scale.set(40,40,40);
+   gltf.scene.rotateY(-Math.PI/1);
+        scene.add(gltf.scene);
+    });
+    
+     //envelope
+     gltfLoader.load("./assets/envelope.gltf", function (gltf) {
+        gltf.scene.position.x = 10;
+        gltf.scene.position.y = -50;
+        gltf.scene.position.z = -180;
+        gltf.scene.scale.set(40,40,40);
+   gltf.scene.rotateY(-Math.PI/1);
+        scene.add(gltf.scene);
+    });
+    
+    //envelope
+     gltfLoader.load("./assets/frame.gltf", function (gltf) {
+        gltf.scene.position.x = -30;
+        gltf.scene.position.y = -35;
+        gltf.scene.position.z = -580;
+        gltf.scene.scale.set(0.3,0.3,0.3);
+   gltf.scene.rotateX(Math.PI/2.5);
+        
+        scene.add(gltf.scene);
+    });
+    
     
     
     //scene.fog = new THREE.FogExp2(0xbfeff5, 0.0015);
@@ -222,7 +254,7 @@ async function init() {
     // back wall
     const shortWall = new THREE.BoxGeometry(150, 100, 10);
     const backWall = new THREE.Mesh(shortWall, wall);
-    backWall.position.set(0, 0, -700);
+    backWall.position.set(0, 0, -600);
     scene.add(backWall);
 
     //front wall that blocks from escaping
@@ -277,7 +309,7 @@ async function init() {
 
     // Ground
     const earth = new THREE.PlaneGeometry(4000, 4000);
-    const ground = new THREE.MeshPhongMaterial({ color: 0x17054c, flatShading: true });
+    const ground = new THREE.MeshPhongMaterial({ color: 0xffffff, flatShading: true });
     const mesh2 = new THREE.InstancedMesh(earth, ground, 500);
     mesh2.translateY(-80);
     mesh2.rotateX(-1.5708);
@@ -313,8 +345,8 @@ function animate() {
         direction.x = Number(moveRight) - Number(moveLeft);
         direction.normalize(); // this ensures consistent movements in all directions
 
-        if (moveForward || moveBackward) velocity.z -= direction.z * 10000.0 * delta;
-        if (moveLeft || moveRight) velocity.x -= direction.x * 10000.0 * delta;
+        if (moveForward || moveBackward) velocity.z -= direction.z * 2000.0 * delta;
+        if (moveLeft || moveRight) velocity.x -= direction.x * 2000.0 * delta;
 
         controls.moveRight(-velocity.x * delta);
         controls.moveForward(-velocity.z * delta);
@@ -335,8 +367,8 @@ function animate() {
     }
     if (controls.object.position.z > -100) {
         controls.object.position.z = -101;
-    } else if (controls.object.position.z < -685) {
-        controls.object.position.z = -684;
+    } else if (controls.object.position.z < -530) {
+        controls.object.position.z = -531;
     }
 
     if (controls.object.position.y > 35) {
