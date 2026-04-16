@@ -56,12 +56,13 @@ async function init() {
 
     //toothbrush
     gltfLoader.load("./assets/toothbrush.gltf", function (gltf) {
-        gltf.scene.position.x = 20;
-        gltf.scene.position.y = 10;
-        gltf.scene.position.z = -270;
-        gltf.scene.scale.set(3, 3, 3);
-        gltf.scene.rotateX(Math.PI / 2.5);
-        gltf.scene.rotateY(-Math.PI / 2.5);
+        gltf.scene.position.x = 0;
+        gltf.scene.position.y = -55;
+        gltf.scene.position.z = -320;
+        gltf.scene.scale.set(4, 4, 4);
+        gltf.scene.rotateX(Math.PI / 2.9);
+        gltf.scene.rotateY(-Math.PI / 1);
+
 
         scene.add(gltf.scene);
     });
@@ -78,12 +79,33 @@ async function init() {
    
     //camera
      gltfLoader.load("./assets/polaroid.gltf", function (gltf) {
-        gltf.scene.position.x = 40;
-        gltf.scene.position.y = 0;
-        gltf.scene.position.z = -400;
+        gltf.scene.position.x = 45;
+        gltf.scene.position.y = -50;
+        gltf.scene.position.z = -260;
         gltf.scene.scale.set(8,8, 8);
         gltf.scene.rotateY(-Math.PI / 3);
-           gltf.scene.rotateZ(-Math.PI / 8);
+          
+        scene.add(gltf.scene);
+    });
+    
+    //pills
+     gltfLoader.load("./assets/pills.gltf", function (gltf) {
+        gltf.scene.position.x = -55;
+        gltf.scene.position.y = -50;
+        gltf.scene.position.z = -320;
+        gltf.scene.scale.set(1,1, 1);
+        gltf.scene.rotateY(-Math.PI / 3);
+          
+        scene.add(gltf.scene);
+    });
+    //pills spilled
+     gltfLoader.load("./assets/pills2.gltf", function (gltf) {
+        gltf.scene.position.x = -55;
+        gltf.scene.position.y = -50;
+        gltf.scene.position.z = -310;
+        gltf.scene.scale.set(1,1, 1);
+        gltf.scene.rotateY(Math.PI / 1);
+         
         scene.add(gltf.scene);
     });
        //STUFFED DOG
@@ -132,23 +154,43 @@ async function init() {
      gltfLoader.load("./assets/envelope.gltf", function (gltf) {
         gltf.scene.position.x = 45;
         gltf.scene.position.y = -50;
-        gltf.scene.position.z = -450;
+        gltf.scene.position.z = -330;
         gltf.scene.scale.set(1,1,1);
    gltf.scene.rotateY(-Math.PI/2);
         scene.add(gltf.scene);
     });
     
     //frame
-     gltfLoader.load("./assetsS/frame.gltf", function (gltf) {
-        gltf.scene.position.x = 30;
-        gltf.scene.position.y = 35;
-        gltf.scene.position.z = -100;
-        gltf.scene.scale.set(0.5,0.5,0.5);
-    gltf.scene.rotateX(-Math.PI/2.5);
+     gltfLoader.load("./assets/frame.gltf", function (gltf) {
+        gltf.scene.position.x = -30;
+        gltf.scene.position.y = -35;
+        gltf.scene.position.z = -350;
+        gltf.scene.scale.set(0.3,0.3,0.3);
+   gltf.scene.rotateX(Math.PI/2.5);
+        
+        scene.add(gltf.scene);
+    });
+     //mirror
+     gltfLoader.load("./assets/mirror.gltf", function (gltf) {
+        gltf.scene.position.x = 10;
+        gltf.scene.position.y = -50;
+        gltf.scene.position.z = -270;
+        gltf.scene.scale.set(0.6,0.6,0.6);
+  gltf.scene.rotateY(Math.PI/2.58);
         
         scene.add(gltf.scene);
     });
     
+     //scarv
+     gltfLoader.load("./assets/scarf.gltf", function (gltf) {
+        gltf.scene.position.x = -30;
+        gltf.scene.position.y = -50;
+        gltf.scene.position.z = -235;
+        gltf.scene.scale.set(0.6,0.6,0.6);
+  gltf.scene.rotateY(-Math.PI/1);
+        
+        scene.add(gltf.scene);
+    });
     
     
     //scene.fog = new THREE.FogExp2(0xbfeff5, 0.0015);
@@ -254,7 +296,7 @@ async function init() {
     // back wall
     const shortWall = new THREE.BoxGeometry(150, 100, 10);
     const backWall = new THREE.Mesh(shortWall, wall);
-    backWall.position.set(0, 0, -600);
+    backWall.position.set(0, 0, -360);
     scene.add(backWall);
 
     //front wall that blocks from escaping
@@ -316,16 +358,19 @@ async function init() {
     scene.add(mesh2);
 
     // lights
-    const dirLight1 = new THREE.DirectionalLight(0xffffff, 1);
-    dirLight1.position.set(0, -40, 10);
+    const dirLight1 = new THREE.DirectionalLight(0xffffff, 2);
+    dirLight1.position.set(40, 40, -100);
     scene.add(dirLight1);
 
-    const dirLight2 = new THREE.DirectionalLight(0xcbc3d5, 5);
-    dirLight2.position.set(0, 40, -230);
+    const dirLight2 = new THREE.DirectionalLight(0xffffff, 5);
+    dirLight2.position.set(0, 0, -300);
     scene.add(dirLight2);
 
     const ambientLight = new THREE.AmbientLight(0x4f00ff);
     scene.add(ambientLight);
+    
+    
+
 }
 
 // Function to update moving objects, in this case the camera.
@@ -360,15 +405,15 @@ function animate() {
             canJump = true;
         }
     }
-    if (controls.object.position.x > 5) {
-        controls.object.position.x = 5;
-    } else if (controls.object.position.x < -5) {
-        controls.object.position.x = -5;
+    if (controls.object.position.x > 10) {
+        controls.object.position.x = 10;
+    } else if (controls.object.position.x < -10) {
+        controls.object.position.x = -10;
     }
     if (controls.object.position.z > -100) {
         controls.object.position.z = -101;
-    } else if (controls.object.position.z < -530) {
-        controls.object.position.z = -531;
+    } else if (controls.object.position.z < -350) {
+        controls.object.position.z = -350;
     }
 
     if (controls.object.position.y > 35) {
