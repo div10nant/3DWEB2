@@ -32,7 +32,7 @@ const direction = new THREE.Vector3();
 
 // Variables for Room
 let font;
-let text = "Room Demo";
+let text = "Objects in Hiding";
 let textGeo;
 let materials;
 let textMesh1;
@@ -44,33 +44,81 @@ let mesh;
 init();
 
 // Define initial scene
-    function init() {
+async function init() {
     // scene setup
     canvas = document.getElementById("3-holder");
     scene = new THREE.Scene();
     scene.background = new THREE.Color(0x000000);
+//models BEGIN HERE
+    //   const objLoader = new OBJLoader().setPath( './' );
+    const gltfLoader = new GLTFLoader().setPath();
+    //objLoader.setMaterials(matDark); // optional since OBJ assets can be loaded without an accompanying MTL file
 
-    ////model
-    //const mtlLoader = new MTLLoader().setPath("../assets/obj_mtl_ex/");
-    //// this loads the model
-    //const materials = await mtlLoader.loadAsync("dog.mtl");
-    //materials.preload();
+    //toothbrush
+    gltfLoader.load("./assets/toothbrush.gltf", function (gltf) {
+        gltf.scene.position.x = -10;
+        gltf.scene.position.y = 10;
+        gltf.scene.position.z = -550;
+        gltf.scene.scale.set(3, 3, 3);
+        gltf.scene.rotateX(Math.PI / 2.5);
+        gltf.scene.rotateY(-Math.PI / 2.5);
 
-    //// OBJ loading
-    //// this sets the path to where the file is
-    //const objLoader = new OBJLoader().setPath("../assets/obj_mtl_ex/");
-    //// this adds MTL file to the model if you have it
-    //objLoader.setMaterials(materials); // optional since OBJ assets can be loaded without an accompanying MTL file
-    //// this loads the model
-    //const object = await objLoader.loadAsync("dog.obj");
-//
-    //// position scale and add model to scene
-    //object.position.y = -0.95;
-    //object.scale.setScalar(0.01);
-    //scene.add(object);
-
-    //
-
+        scene.add(gltf.scene);
+    });
+    
+    //shoebox
+        gltfLoader.load("./assets/shoebox.gltf", function (gltf) {
+        gltf.scene.position.x = 45;
+        gltf.scene.position.y = -40;
+        gltf.scene.position.z = -220;
+        gltf.scene.scale.set(0.15, 0.15, 0.15);
+        gltf.scene.rotateY(-Math.PI / 2);
+        scene.add(gltf.scene);
+    });
+   
+    //camera
+     gltfLoader.load("./assets/polaroid.gltf", function (gltf) {
+        gltf.scene.position.x = 40;
+        gltf.scene.position.y = 0;
+        gltf.scene.position.z = -400;
+        gltf.scene.scale.set(8,8, 8);
+        gltf.scene.rotateY(-Math.PI / 3);
+           gltf.scene.rotateZ(-Math.PI / 8);
+        scene.add(gltf.scene);
+    });
+       //STUFFED DOG
+     gltfLoader.load("./assets/dog.gltf", function (gltf) {
+        gltf.scene.position.x = -50;
+        gltf.scene.position.y = -50;
+        gltf.scene.position.z = -350;
+        gltf.scene.scale.set(0.8,0.8, 0.8);
+        gltf.scene.rotateX(-Math.PI / 2);
+           gltf.scene.rotateZ(Math.PI / 2);
+        scene.add(gltf.scene);
+    });
+    
+    //hanger left
+   gltfLoader.load("./assets/hanger.gltf", function (gltf) {
+        gltf.scene.position.x = -75;
+        gltf.scene.position.y = 8;
+        gltf.scene.position.z = -200;
+        gltf.scene.scale.set(3.5,3.5,3.5);
+        gltf.scene.rotateX(-Math.PI / 2);
+           gltf.scene.rotateZ(Math.PI / 2);
+        scene.add(gltf.scene);
+    });
+     //hanger left
+   gltfLoader.load("./assets/hanger.gltf", function (gltf) {
+        gltf.scene.position.x = -20;
+        gltf.scene.position.y = 8;
+        gltf.scene.position.z = -200;
+        gltf.scene.scale.set(3.5,3.5,3.5);
+        gltf.scene.rotateX(-Math.PI / 2);
+           gltf.scene.rotateZ(Math.PI / 2);
+        scene.add(gltf.scene);
+    });
+    
+    
     //scene.fog = new THREE.FogExp2(0xbfeff5, 0.0015);
     renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(innerWidth, innerHeight);
@@ -168,7 +216,8 @@ init();
     // Add world geometry
 
     // room material
-    const wall = new THREE.MeshPhongMaterial({ color: 0xd7d5d6 });
+    const wall = new THREE.MeshPhongMaterial({ color: 0x2e2b30, flatShading: true });
+    
 
     // back wall
     const shortWall = new THREE.BoxGeometry(150, 100, 10);
@@ -194,11 +243,11 @@ init();
     // front walls
     const frontSide = new THREE.BoxGeometry(50, 100, 10);
     const frontLeft = new THREE.Mesh(frontSide, wall);
-    frontLeft.position.set(-50, 0, -200);
+    frontLeft.position.set(-50, 0, -190);
     scene.add(frontLeft);
 
     const frontRight = new THREE.Mesh(frontSide, wall);
-    frontRight.position.set(50, 0, -200);
+    frontRight.position.set(50, 0, -190);
     scene.add(frontRight);
 
     //const frontTop = new THREE.BoxGeometry(100, 57.5, 10);
@@ -208,7 +257,7 @@ init();
 
     // ceiling
 
-    const ceilingMat = new THREE.MeshPhongMaterial({ color: 0xd7d5d6 });
+    const ceilingMat = new THREE.MeshPhongMaterial({ color: 0x14111c, flatShading: true });
     const ceilingShape = new THREE.BoxGeometry(150, 20, 910);
     const ceilingMain = new THREE.Mesh(ceilingShape, ceilingMat);
     ceilingMain.position.set(0, 60, -450);
@@ -223,71 +272,27 @@ init();
     poleMain.rotateZ(1.5708);
     scene.add(poleMain);
 
-    ////ground plane
-    //const groundMat = new THREE.MeshPhongMaterial({ color: 0xb76767 });
-    //const groundShape = new THREE.PlaneGeometry(300,300,0);
-    //const groundMain = new THREE.Mesh(groundShape, groundMat);
-    //groundMain.position.set(-100, 0, 0);
-    //scene.add(groundMain);
-    //groundMain.rotateX(1.5708);
 
-    // model
 
-    // material for model
-    var newMat = new THREE.MeshPhongMaterial({
-        color: 0x00c00f,
-        specular: 0xbbbbbb,
-        shininess: 100
-    });
 
-    const loader2 = new GLTFLoader().load(
-        "../assets/coathanger.gltf",
-        function (gltf) {
-            // Scan loaded model for mesh and apply defined material if mesh is present
-            gltf.scene.traverse(function (child) {
-                if (child.isMesh) {
-                    child.material = newMat;
-                }
-            });
-            // set position and scale
-            mesh = gltf.scene;
-            mesh.position.set(0, 40, -230);
-            mesh.scale.set(0.4, 0.4, 0.4);
-            // Add model to scene
-            scene.add(mesh);
-        },
-        undefined,
-        function (error) {
-            console.error(error);
-        }
-    );
-
-    // load image as a texture
-    const imgSource = new THREE.TextureLoader().load("../assets/cab-curio-1.jpg");
-    // use loaded testure in a material
-    const imgMaterial = new THREE.MeshBasicMaterial({
-        map: imgSource,
-        side: THREE.DoubleSide
-    });
-
-    //// Ground
-    //const earth = new THREE.PlaneGeometry(4000, 4000);
-    //const ground = new THREE.MeshPhongMaterial({ color: 0x2d2d2d, flatShading: true });
-    //const mesh2 = new THREE.InstancedMesh(earth, ground, 500);
-    //mesh2.translateY(-80);
-    //mesh2.rotateX(-1.5708);
-    //scene.add(mesh2);
+    // Ground
+    const earth = new THREE.PlaneGeometry(4000, 4000);
+    const ground = new THREE.MeshPhongMaterial({ color: 0x17054c, flatShading: true });
+    const mesh2 = new THREE.InstancedMesh(earth, ground, 500);
+    mesh2.translateY(-80);
+    mesh2.rotateX(-1.5708);
+    scene.add(mesh2);
 
     // lights
-    const dirLight1 = new THREE.DirectionalLight(0xffffff, 3);
-    dirLight1.position.set(1, 1, 1);
+    const dirLight1 = new THREE.DirectionalLight(0xffffff, 1);
+    dirLight1.position.set(0, -40, 10);
     scene.add(dirLight1);
 
-    const dirLight2 = new THREE.DirectionalLight(0xffffff, 2);
-    dirLight2.position.set(-1, -1, -1);
+    const dirLight2 = new THREE.DirectionalLight(0xcbc3d5, 5);
+    dirLight2.position.set(0, 40, -230);
     scene.add(dirLight2);
 
-    const ambientLight = new THREE.AmbientLight(0x555555);
+    const ambientLight = new THREE.AmbientLight(0x4f00ff);
     scene.add(ambientLight);
 }
 
@@ -349,33 +354,3 @@ function render() {
 }
 
 // Function to generate text shapes
-function createText() {
-    // create geomtery with parameters, change parameters to test modifications
-    // "text" on next line is the message to be written
-    textGeo = new TextGeometry(text, {
-        font: font,
-        size: 20,
-        depth: 10,
-        curveSegments: 4,
-        bevelThickness: 2,
-        bevelSize: 1.5,
-        bevelEnabled: true
-    });
-
-    // finish making geometry
-    textGeo.computeBoundingBox();
-    const centerOffset = -0.5 * (textGeo.boundingBox.max.x - textGeo.boundingBox.min.x);
-
-    // apply material to geometry
-    textMesh1 = new THREE.Mesh(textGeo, materials);
-
-    // set position and rotation
-    textMesh1.position.x = centerOffset - 70;
-    textMesh1.position.z = -90;
-    textMesh1.position.y = -100;
-    //textMesh1.rotation.z = 1.5708;
-    textMesh1.rotation.y = 1.5708;
-
-    // add to group to be added to scene
-    group.add(textMesh1);
-}
