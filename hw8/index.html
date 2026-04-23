@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>three.js webgl - drag controls</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<link type="text/css" rel="stylesheet" href="main.css">
+		<style>
+			body {
+				background-color: #f0f0f0;
+				color: #444;
+			}
+			a {
+				color: #08f;
+			}
+		</style>
+	</head>
+	<body>
+
+		<div id="info">
+			<a href="https://threejs.org" target="_blank" rel="noopener">three.js</a> webgl - drag controls<br />
+			Use "Shift+Click" to add/remove objects to/from a group.<br />
+			Use "M" to toggle between rotate and pan mode (touch only).<br />
+			Grouped objects can be transformed as a union.
+		</div>
+
+		<script type="importmap">
+			{
+				"imports": {
+					"three": "../src/three.module.js",
+					"../src": "./jsm/"
+				}
+			}
+		</script>
+ <script type= "module" src="./script.js"></script>
+
+
+	</body>
+</html>
