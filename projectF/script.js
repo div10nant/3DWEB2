@@ -188,34 +188,16 @@ async function init() {
     frontRight.position.set(50, 0, -190);
     scene.add(frontRight);
 
-    //const frontTop = new THREE.BoxGeometry(100, 57.5, 10);
-    //const frontMiddle = new THREE.Mesh(frontTop, wall);
-    //frontMiddle.position.set(0, 70, -200);
-    //scene.add(frontMiddle);
-
-    // ceiling
+//https://www.youtube.com/watch?v=d1sr2oWnxus&t=66s < CUBE MATERIAL CODE CREDITS
+    // TV
+    
+    const video = document.getElementById( 'video' );
+    const texture = new THREE.VideoTexture( video ); 
         const tvMat = new THREE.MeshPhongMaterial({ color: 0xffffff, flatShading: true });
         const tvShape = new THREE.BoxGeometry(150, 150, 150);
         const tvMain = new THREE.Mesh(tvShape, tvMat);
     
-    const ceilingMat = new THREE.MeshPhongMaterial({ color: 0x14111c, flatShading: true });
-    const ceilingShape = new THREE.BoxGeometry(150, 20, 910);
-    const ceilingMain = new THREE.Mesh(ceilingShape, ceilingMat);
-    ceilingMain.position.set(0, 60, -450);
-    scene.add(ceilingMain);
-
-    //closet pole
-    const poleMat = new THREE.MeshPhongMaterial({ color: 0x5c5c5c });
-    const poleShape = new THREE.CylinderGeometry(3, 3, 148);
-    const poleMain = new THREE.Mesh(poleShape, poleMat);
-    poleMain.position.set(0, 40, -230);
-    poleMain.rotateX(1.5708);
-    poleMain.rotateZ(1.5708);
-    scene.add(poleMain);
-
-
-
-    
+ 
     // Ground
     const earth = new THREE.PlaneGeometry(4000, 4000);
     const ground = new THREE.MeshPhongMaterial({ color: 0xffffff, flatShading: true });
