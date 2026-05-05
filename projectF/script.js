@@ -41,10 +41,8 @@ let group;
 let mesh;
 
 
-let video;
-var knotVideo;
-let vidTexture;
-let flatVideo;
+let video1;
+
 
 // Run the "init" function which is like "setup" in p5.
 init();
@@ -54,6 +52,7 @@ async function init() {
     // scene setup
     canvas = document.getElementById("3-holder");
     scene = new THREE.Scene();
+    
     scene.background = new THREE.Color(0x000000);
 //models BEGIN HERE
     //   const objLoader = new OBJLoader().setPath( './' );
@@ -82,6 +81,7 @@ async function init() {
 
     instructions.addEventListener("click", function () {
         controls.lock();
+        video1.play();
     });
 
     controls.addEventListener("lock", function () {
@@ -164,16 +164,20 @@ async function init() {
     // room material
     
     
-    const video = document.createElement('video');
-    video.src = './assets/video1.mp4';
-    video.loop = true;
-    video.muted = false;
-    video.play();
+    //const video = document.createElement('video');
+    //video.src = './assets/video1.mp4';
+    //video.loop = true;
+    //video.muted = false;
+    //video.play();
+    //
+    const video1 = document.getElementbyID("video1");
+    video1.addEventListener("play", function() {
+        this.currentTime = 0;
+    });
     
-    const videoTexture = new THREE.VideoTexture(video);
-    videoTexture.minFilter = THREE.LinearFilter;
-    videoTexture.magFilter = THREE.LinearFilter;
-    videoTexture.format = THREE.REGBAFormat;
+    const videoTexture1 = new THREE.VideoTexture(video1);
+ 
+    videoTexture1.format = THREE.REGBAFormat;
     
     const screenGeometry = new THREE.PlaneGeometry (500,500);
     const screenMaterial = new THREE.MeshBasicMaterial({
@@ -224,10 +228,10 @@ function animate() {
     if (controls.isLocked === true) {
         const delta = (time - prevTime) / 2000;
 
-        velocity.x -= velocity.x * 30.0 * delta;
-        velocity.z -= velocity.z * 30.0 * delta;
+        velocity.x -= velocity.x * 10.0 * delta;
+        velocity.z -= velocity.z * 10.0 * delta;
 
-        velocity.y -= 9.8 * 100.0 * delta; // 100.0 = mass
+        velocity.y -= velocity.y * 10.0 * delta;
 
         direction.z = Number(moveForward) - Number(moveBackward);
         direction.x = Number(moveRight) - Number(moveLeft);
@@ -253,7 +257,7 @@ function animate() {
     } else if (controls.object.position.x < -100) {
         controls.object.position.x = -100;
     }
-    if (controls.object.position.z > -100) {
+    if (controls.object.position.z > 0) {
         controls.object.position.z = -110;
     } else if (controls.object.position.z < -300) {
         controls.object.position.z = -400;
