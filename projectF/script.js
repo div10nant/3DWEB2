@@ -158,7 +158,7 @@ async function init() {
 
     // Add world geometry
     const tvMat = new THREE.MeshPhongMaterial({ color: 0x5c5c5c });
-    const tvShape = new THREE.BoxGeometry(150, 100, 10);
+    const tvShape = new THREE.BoxGeometry(300, 300, 10);
     const tvMain = new THREE.Mesh(tvShape,tvMat);
     tvMain.position.set(0, 0, 0);
     // room material
@@ -175,7 +175,7 @@ async function init() {
     videoTexture.magFilter = THREE.LinearFilter;
     videoTexture.format = THREE.REGBAFormat;
     
-    const screenGeometry = new THREE.PlaneGeometry (3,2);
+    const screenGeometry = new THREE.PlaneGeometry (500,500);
     const screenMaterial = new THREE.MeshBasicMaterial({
         map: videoTexture
         
