@@ -1,0 +1,295 @@
+// Room Example Three.js Example
+// Chelsea Thompto - Spring 2026
+
+// Three.js uses an import map to add features.
+// The "import * as THREE from 'three';" will be
+// in all sketches. Add-ons will be added after.
+
+// The main library script
+import * as THREE from "three";
+
+// The plug-ins
+import { PointerLockControls } from "../src/PointerLockControls.js";
+import { Font } from "../src/FontLoader.js";
+import { TTFLoader } from "../src/TTFLoader.js";
+import { TextGeometry } from "../src/TextGeometry.js";
+import { GLTFLoader } from "../src/GLTFLoader.js";
+import { OBJLoader } from "../src/OBJLoader.js";
+import { MTLLoader } from "../src/MTLLoader.js";
+// Declaring global variables.
+let camera, canvas, controls, scene, renderer;
+
+// Variables for First Person Controls
+let raycaster;
+let moveForward = false;
+let moveBackward = false;
+let moveLeft = false;
+let moveRight = false;
+let canJump = true;
+let prevTime = performance.now();
+const velocity = new THREE.Vector3();
+const direction = new THREE.Vector3();
+
+// Variables for Room
+let font;
+let text = "Objects in Hiding";
+let textGeo;
+let materials;
+let textMesh1;
+let textMesh2;
+let group;
+let mesh;
+
+// Run the "init" function which is like "setup" in p5.
+init();
+
+// Define initial scene
+async function init() {
+    // scene setup
+    canvas = document.getElementById("3-holder");
+    scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x000000);
+//models BEGIN HERE
+    //   const objLoader = new OBJLoader().setPath( './' );
+    const gltfLoader = new GLTFLoader().setPath();
+    //objLoader.setMaterials(matDark); // optional since OBJ assets can be loaded without an accompanying MTL file
+
+    
+    
+    //scene.fog = new THREE.FogExp2(0xbfeff5, 0.0015);
+    renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(innerWidth, innerHeight);
+    renderer.setAnimationLoop(animate);
+    canvas.appendChild(renderer.domElement);
+
+    // Setup camera
+    camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 1000);
+    camera.position.set(0, 10, 0);
+
+    // Setup First Person Controls
+    // DO NOT TOUCH
+
+    controls = new PointerLockControls(camera, document.body);
+
+    const blocker = document.getElementById("blocker");
+    const instructions = document.getElementById("instructions");
+
+    instructions.addEventListener("click", function () {
+        controls.lock();
+    });
+
+    controls.addEventListener("lock", function () {
+        instructions.style.display = "none";
+        blocker.style.display = "none";
+    });
+
+    controls.addEventListener("unlock", function () {
+        blocker.style.display = "block";
+        instructions.style.display = "";
+    });
+
+    scene.add(controls.object);
+
+    const onKeyDown = function (event) {
+        switch (event.code) {
+            case "ArrowUp":
+            case "KeyW":
+                moveForward = true;
+                break;
+
+            case "ArrowLeft":
+            case "KeyA":
+                moveLeft = true;
+                break;
+
+            case "ArrowDown":
+            case "KeyS":
+                moveBackward = true;
+                break;
+
+            case "ArrowRight":
+            case "KeyD":
+                moveRight = true;
+                break;
+
+            case "Space":
+                if (canJump === true) velocity.y += 350;
+                canJump = false;
+                break;
+        }
+    };
+
+    const onKeyUp = function (event) {
+        switch (event.code) {
+            case "ArrowUp":
+            case "KeyW":
+                moveForward = false;
+                break;
+
+            case "ArrowLeft":
+            case "KeyA":
+                moveLeft = false;
+                break;
+
+            case "ArrowDown":
+            case "KeyS":
+                moveBackward = false;
+                break;
+
+            case "ArrowRight":
+            case "KeyD":
+                moveRight = false;
+                break;
+        }
+    };
+
+    document.addEventListener("keydown", onKeyDown);
+    document.addEventListener("keyup", onKeyUp);
+
+    raycaster = new THREE.Raycaster(new THREE.Vector3(), new THREE.Vector3(0, -1, 0), 0, 10);
+
+    // End First Person Controls
+
+    // Add world geometry
+    const tvCube = new THREE.BoxGeometry(150, 100, 10);
+    tvCube.position.set(0, 0, -70);
+    // room material
+    const wall = new THREE.MeshPhongMaterial({ color: 0x2e2b30, flatShading: true });
+    
+
+    // back wall
+    const shortWall = new THREE.BoxGeometry(150, 100, 10);
+    const backWall = new THREE.Mesh(shortWall, wall);
+    backWall.position.set(0, 0, -360);
+    scene.add(backWall);
+
+    //front wall that blocks from escaping
+    const front2Wall = new THREE.Mesh(shortWall, wall);
+    front2Wall.position.set(0, 0, -70);
+    scene.add(front2Wall);
+
+    // side walls
+    const longWall = new THREE.BoxGeometry(10, 100, 810);
+    const leftWall = new THREE.Mesh(longWall, wall);
+    leftWall.position.set(-70, 0, -450);
+    scene.add(leftWall);
+
+    const rightWall = new THREE.Mesh(longWall, wall);
+    rightWall.position.set(70, 0, -450);
+    scene.add(rightWall);
+
+    // front walls
+    const frontSide = new THREE.BoxGeometry(50, 100, 10);
+    const frontLeft = new THREE.Mesh(frontSide, wall);
+    frontLeft.position.set(-50, 0, -190);
+    scene.add(frontLeft);
+
+    const frontRight = new THREE.Mesh(frontSide, wall);
+    frontRight.position.set(50, 0, -190);
+    scene.add(frontRight);
+
+    //const frontTop = new THREE.BoxGeometry(100, 57.5, 10);
+    //const frontMiddle = new THREE.Mesh(frontTop, wall);
+    //frontMiddle.position.set(0, 70, -200);
+    //scene.add(frontMiddle);
+
+    // ceiling
+
+    const ceilingMat = new THREE.MeshPhongMaterial({ color: 0x14111c, flatShading: true });
+    const ceilingShape = new THREE.BoxGeometry(150, 20, 910);
+    const ceilingMain = new THREE.Mesh(ceilingShape, ceilingMat);
+    ceilingMain.position.set(0, 60, -450);
+    scene.add(ceilingMain);
+
+    //closet pole
+    const poleMat = new THREE.MeshPhongMaterial({ color: 0x5c5c5c });
+    const poleShape = new THREE.CylinderGeometry(3, 3, 148);
+    const poleMain = new THREE.Mesh(poleShape, poleMat);
+    poleMain.position.set(0, 40, -230);
+    poleMain.rotateX(1.5708);
+    poleMain.rotateZ(1.5708);
+    scene.add(poleMain);
+
+
+
+    
+    // Ground
+    const earth = new THREE.PlaneGeometry(4000, 4000);
+    const ground = new THREE.MeshPhongMaterial({ color: 0xffffff, flatShading: true });
+    const mesh2 = new THREE.InstancedMesh(earth, ground, 500);
+    mesh2.translateY(-80);
+    mesh2.rotateX(-1.5708);
+    scene.add(mesh2);
+
+    // lights
+    const dirLight1 = new THREE.DirectionalLight(0xffffff, 2);
+    dirLight1.position.set(40, 40, -100);
+    scene.add(dirLight1);
+
+    const dirLight2 = new THREE.DirectionalLight(0xffffff, 5);
+    dirLight2.position.set(0, 0, -300);
+    scene.add(dirLight2);
+
+    const ambientLight = new THREE.AmbientLight(0x4f00ff);
+    scene.add(ambientLight);
+    
+}
+
+// Function to update moving objects, in this case the camera.
+// The render function is trigger at the end to update the canvas.
+function animate() {
+    // Start First Person Control Animations
+    const time = performance.now();
+    if (controls.isLocked === true) {
+        const delta = (time - prevTime) / 2000;
+
+        velocity.x -= velocity.x * 30.0 * delta;
+        velocity.z -= velocity.z * 30.0 * delta;
+
+        velocity.y -= 9.8 * 100.0 * delta; // 100.0 = mass
+
+        direction.z = Number(moveForward) - Number(moveBackward);
+        direction.x = Number(moveRight) - Number(moveLeft);
+        direction.normalize(); // this ensures consistent movements in all directions
+
+        if (moveForward || moveBackward) velocity.z -= direction.z * 2000.0 * delta;
+        if (moveLeft || moveRight) velocity.x -= direction.x * 2000.0 * delta;
+
+        controls.moveRight(-velocity.x * delta);
+        controls.moveForward(-velocity.z * delta);
+
+        // jump fix
+        controls.object.position.y += velocity.y * delta;
+        if (controls.object.position.y < 10) {
+            velocity.y = 0;
+            controls.object.position.y = 10;
+
+            canJump = true;
+        }
+    }
+    if (controls.object.position.x > 10) {
+        controls.object.position.x = 10;
+    } else if (controls.object.position.x < -10) {
+        controls.object.position.x = -10;
+    }
+    if (controls.object.position.z > -100) {
+        controls.object.position.z = -101;
+    } else if (controls.object.position.z < -350) {
+        controls.object.position.z = -350;
+    }
+
+    if (controls.object.position.y > 35) {
+        controls.object.position.y = 35;
+    }
+    prevTime = time;
+    // End First Person Control Animations
+
+    render();
+}
+
+// Function to render the scene using the camera.
+function render() {
+    renderer.render(scene, camera);
+}
+
+// Function to generate text shapes
