@@ -16,6 +16,18 @@ import { TextGeometry } from "../src/TextGeometry.js";
 import { GLTFLoader } from "../src/GLTFLoader.js";
 import { OBJLoader } from "../src/OBJLoader.js";
 import { MTLLoader } from "../src/MTLLoader.js";
+
+import { DragControls } from "../src/DragControls.js";
+
+import Stats from "../src/stats.module.js";
+import { GUI } from "../src/lil-gui.module.min.js";
+import { EffectComposer } from "../src/EffectComposer.js";
+import { RenderPass } from "../src/RenderPass.js";
+import { HalftonePass } from "../src/HalftonePass.js";
+
+const objects = [];
+
+
 // Declaring global variables.
 let camera, canvas, controls, scene, renderer;
 
@@ -39,6 +51,7 @@ let textMesh1;
 let textMesh2;
 let group;
 let mesh;
+let composer;
 
 
 let video1;
@@ -170,18 +183,18 @@ async function init() {
     //video.muted = false;
     //video.play();
     //
-    const video1 = document.getElementbyID("video1");
+    const video1 = document.getElementById("video1");
     video1.addEventListener("play", function() {
         this.currentTime = 0;
     });
     
     const videoTexture1 = new THREE.VideoTexture(video1);
  
-    videoTexture1.format = THREE.REGBAFormat;
+    videoTexture1.colorSpace = THREE.SRGBColorSpace;
     
     const screenGeometry = new THREE.PlaneGeometry (500,500);
     const screenMaterial = new THREE.MeshBasicMaterial({
-        map: videoTexture
+        map: videoTexture1
         
     });
     
@@ -271,6 +284,159 @@ function animate() {
 
     render();
 }
+
+
+
+      // post-processing
+
+      composer = new EffectComposer(renderer);
+      const renderPass = new RenderPass(scene, camera);
+      const params = {
+            shape: 1,
+            radius: 4,
+            rotateR: Math.PI / 12,
+            rotateB: (Math.PI / 12) * 2,
+            rotateG: (Math.PI / 12) * 3,
+            scatter: 0,
+            blending: 1,
+            blendingMode: 1,
+            greyscale: false,
+            disable: false
+      };
+      const halftonePass = new HalftonePass(params);
+      composer.addPass(renderPass);
+      composer.addPass(halftonePass);
+
+      window.onresize = function () {
+            // resize composer
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            composer.setSize(window.innerWidth, window.innerHeight);
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+      };
+
+      // GUI
+
+      const controller = {
+            radius: halftonePass.uniforms["radius"].value,
+            rotateR: halftonePass.uniforms["rotateR"].value / (Math.PI / 180),
+            rotateG: halftonePass.uniforms["rotateG"].value / (Math.PI / 180),
+            rotateB: halftonePass.uniforms["rotateB"].value / (Math.PI / 180),
+            scatter: halftonePass.uniforms["scatter"].value,
+            shape: halftonePass.uniforms["shape"].value,
+            greyscale: halftonePass.uniforms["greyscale"].value,
+            blending: halftonePass.uniforms["blending"].value,
+            blendingMode: halftonePass.uniforms["blendingMode"].value,
+            disable: halftonePass.uniforms["disable"].value
+      };
+
+      function onGUIChange() {
+            // update uniforms
+            halftonePass.uniforms["radius"].value = controller.radius;
+            halftonePass.uniforms["rotateR"].value = controller.rotateR * (Math.PI / 180);
+            halftonePass.uniforms["rotateG"].value = controller.rotateG * (Math.PI / 180);
+            halftonePass.uniforms["rotateB"].value = controller.rotateB * (Math.PI / 180);
+            halftonePass.uniforms["scatter"].value = controller.scatter;
+            halftonePass.uniforms["shape"].value = controller.shape;
+            halftonePass.uniforms["greyscale"].value = controller.greyscale;
+            halftonePass.uniforms["blending"].value = controller.blending;
+            halftonePass.uniforms["blendingMode"].value = controller.blendingMode;
+            halftonePass.uniforms["disable"].value = controller.disable;
+      }
+
+      const gui = new GUI();
+      gui.add(controller, "shape", { Dot: 1, Ellipse: 2, Line: 3, Square: 4, Diamond: 5 }).onChange(onGUIChange);
+      gui.add(controller, "radius", 1, 25).onChange(onGUIChange);
+      gui.add(controller, "rotateR", 0, 90).onChange(onGUIChange);
+      gui.add(controller, "rotateG", 0, 90).onChange(onGUIChange);
+      gui.add(controller, "rotateB", 0, 90).onChange(onGUIChange);
+      gui.add(controller, "scatter", 0, 1, 0.01).onChange(onGUIChange);
+      gui.add(controller, "greyscale").onChange(onGUIChange);
+      gui.add(controller, "blending", 0, 1, 0.01).onChange(onGUIChange);
+      gui.add(controller, "blendingMode", { Linear: 1, Multiply: 2, Add: 3, Lighter: 4, Darker: 5 }).onChange(
+            onGUIChange
+      );
+      gui.add(controller, "disable").onChange(onGUIChange);
+      
+      
+
+      container.appendChild(renderer.domElement);
+
+      controls = new DragControls([...objects], camera, renderer.domElement);
+      controls.rotateSpeed = 2;
+      controls.addEventListener("drag", render);
+
+      //
+
+      window.addEventListener("resize", onWindowResize);
+
+      document.addEventListener("click", onClick);
+      window.addEventListener("keydown", onKeyDown);
+      window.addEventListener("keyup", onKeyUp);
+
+      render();
+}
+
+function onWindowResize() {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+
+      renderer.setSize(window.innerWidth, window.innerHeight);
+
+      render();
+}
+
+function onKeyDown(event) {
+      enableSelection = event.keyCode === 16 ? true : false;
+
+      if (event.keyCode === 77) {
+            controls.touches.ONE = controls.touches.ONE === THREE.TOUCH.PAN ? THREE.TOUCH.ROTATE : THREE.TOUCH.PAN;
+      }
+}
+
+function onKeyUp() {
+      enableSelection = false;
+}
+
+function onClick(event) {
+      event.preventDefault();
+
+      if (enableSelection === true) {
+            const draggableObjects = controls.objects;
+            draggableObjects.length = 0;
+
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+            raycaster.setFromCamera(mouse, camera);
+
+            const intersections = raycaster.intersectObjects(objects, true);
+
+            if (intersections.length > 0) {
+                  const object = intersections[0].object;
+
+                  if (group.children.includes(object) === true) {
+                        object.material.emissive.set(0x000000);
+                        scene.attach(object);
+                  } else {
+                        object.material.emissive.set(0xaaaaaa);
+                        group.attach(object);
+                  }
+
+                  controls.transformGroup = true;
+                  draggableObjects.push(group);
+            }
+
+            if (group.children.length === 0) {
+                  controls.transformGroup = false;
+                  draggableObjects.push(...objects);
+            }
+      }
+
+      render();
+}
+
+
 
 // Function to render the scene using the camera.
 function render() {

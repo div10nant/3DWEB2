@@ -151,7 +151,7 @@ function init() {
       gui.add(controller, "blendingMode", { Linear: 1, Multiply: 2, Add: 3, Lighter: 4, Darker: 5 }).onChange(
             onGUIChange
       );
-      gui.add(controller, "disable").onChange(onGUIChange);
+      //gui.add(controller, "disable").onChange(onGUIChange);
       
       
 
