@@ -157,8 +157,10 @@ async function init() {
     // End First Person Controls
 
     // Add world geometry
-    const tvCube = new THREE.BoxGeometry(150, 100, 10);
-    tvCube.position.set(0, 0, -70);
+    const tvMat = new THREE.MeshPhongMaterial({ color: 0x5c5c5c });
+    const tvShape = new THREE.BoxGeometry(150, 100, 10);
+    const tvMain = new THREE.Mesh(tvShape,tvMat);
+    tvMain.position.set(0, 0, 0);
     // room material
     
     
@@ -246,19 +248,19 @@ function animate() {
             canJump = true;
         }
     }
-    if (controls.object.position.x > 10) {
-        controls.object.position.x = 10;
-    } else if (controls.object.position.x < -10) {
-        controls.object.position.x = -10;
+    if (controls.object.position.x > 100) {
+        controls.object.position.x = 100;
+    } else if (controls.object.position.x < -100) {
+        controls.object.position.x = -100;
     }
     if (controls.object.position.z > -100) {
-        controls.object.position.z = -101;
-    } else if (controls.object.position.z < -350) {
-        controls.object.position.z = -350;
+        controls.object.position.z = -110;
+    } else if (controls.object.position.z < -300) {
+        controls.object.position.z = -400;
     }
 
-    if (controls.object.position.y > 35) {
-        controls.object.position.y = 35;
+    if (controls.object.position.y > 0) {
+        controls.object.position.y = 50;
     }
     prevTime = time;
     // End First Person Control Animations
