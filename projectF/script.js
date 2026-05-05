@@ -194,7 +194,10 @@ async function init() {
     //scene.add(frontMiddle);
 
     // ceiling
-
+        const tvMat = new THREE.MeshPhongMaterial({ color: 0xffffff, flatShading: true });
+        const tvShape = new THREE.BoxGeometry(150, 150, 150);
+        const tvMain = new THREE.Mesh(tvShape, tvMat);
+    
     const ceilingMat = new THREE.MeshPhongMaterial({ color: 0x14111c, flatShading: true });
     const ceilingShape = new THREE.BoxGeometry(150, 20, 910);
     const ceilingMain = new THREE.Mesh(ceilingShape, ceilingMat);
