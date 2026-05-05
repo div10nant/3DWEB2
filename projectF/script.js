@@ -40,6 +40,12 @@ let textMesh2;
 let group;
 let mesh;
 
+
+let video;
+var knotVideo;
+let vidTexture;
+let flatVideo;
+
 // Run the "init" function which is like "setup" in p5.
 init();
 
@@ -154,48 +160,36 @@ async function init() {
     const tvCube = new THREE.BoxGeometry(150, 100, 10);
     tvCube.position.set(0, 0, -70);
     // room material
-    const wall = new THREE.MeshPhongMaterial({ color: 0x2e2b30, flatShading: true });
     
-
-    // back wall
-    const shortWall = new THREE.BoxGeometry(150, 100, 10);
-    const backWall = new THREE.Mesh(shortWall, wall);
-    backWall.position.set(0, 0, -360);
-    scene.add(backWall);
-
-    //front wall that blocks from escaping
-    const front2Wall = new THREE.Mesh(shortWall, wall);
-    front2Wall.position.set(0, 0, -70);
-    scene.add(front2Wall);
-
-    // side walls
-    const longWall = new THREE.BoxGeometry(10, 100, 810);
-    const leftWall = new THREE.Mesh(longWall, wall);
-    leftWall.position.set(-70, 0, -450);
-    scene.add(leftWall);
-
-    const rightWall = new THREE.Mesh(longWall, wall);
-    rightWall.position.set(70, 0, -450);
-    scene.add(rightWall);
-
-    // front walls
-    const frontSide = new THREE.BoxGeometry(50, 100, 10);
-    const frontLeft = new THREE.Mesh(frontSide, wall);
-    frontLeft.position.set(-50, 0, -190);
-    scene.add(frontLeft);
-
-    const frontRight = new THREE.Mesh(frontSide, wall);
-    frontRight.position.set(50, 0, -190);
-    scene.add(frontRight);
+    
+    const video = document.createElement('video');
+    video.src = './assets/video1.mp4';
+    video.loop = true;
+    video.muted = false;
+    video.play();
+    
+    const videoTexture = new THREE.VideoTexture(video);
+    videoTexture.minFilter = THREE.LinearFilter;
+    videoTexture.magFilter = THREE.LinearFilter;
+    videoTexture.format = THREE.REGBAFormat;
+    
+    const screenGeometry = new THREE.PlaneGeometry (3,2);
+    const screenMaterial = new THREE.MeshBasicMaterial({
+        map: videoTexture
+        
+    });
+    
+    const screen1 = new THREE.Mesh(screenGeometry, screenMaterial);
+    screen1.position.set(0,3,-1.5);
+    screen1.rotation.y = Math.PI;
+    
+    
+    scene.add(screen1);
+    
 
 //https://www.youtube.com/watch?v=d1sr2oWnxus&t=66s < CUBE MATERIAL CODE CREDITS
     // TV
     
-    const video = document.getElementById( 'video' );
-    const texture = new THREE.VideoTexture( video ); 
-        const tvMat = new THREE.MeshPhongMaterial({ color: 0xffffff, flatShading: true });
-        const tvShape = new THREE.BoxGeometry(150, 150, 150);
-        const tvMain = new THREE.Mesh(tvShape, tvMat);
     
  
     // Ground
