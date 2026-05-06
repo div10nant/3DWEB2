@@ -51,8 +51,12 @@ let textMesh1;
 let textMesh2;
 let group;
 let mesh;
-let composer;
 
+
+let composer;
+let container;
+let timer, stats;
+let enableSelection = false;
 
 let video1;
 
@@ -192,14 +196,15 @@ async function init() {
  
     videoTexture1.colorSpace = THREE.SRGBColorSpace;
     
-    const screenGeometry = new THREE.PlaneGeometry (500,500);
+    const screenGeometry = new THREE.PlaneGeometry (100,100);
+
     const screenMaterial = new THREE.MeshBasicMaterial({
-        map: videoTexture1
+    map: videoTexture1
         
     });
     
     const screen1 = new THREE.Mesh(screenGeometry, screenMaterial);
-    screen1.position.set(0,3,-1.5);
+    screen1.position.set(0,0, 500);
     screen1.rotation.y = Math.PI;
     
     
@@ -231,63 +236,7 @@ async function init() {
     const ambientLight = new THREE.AmbientLight(0x4f00ff);
     scene.add(ambientLight);
     
-}
-
-// Function to update moving objects, in this case the camera.
-// The render function is trigger at the end to update the canvas.
-function animate() {
-    // Start First Person Control Animations
-    const time = performance.now();
-    if (controls.isLocked === true) {
-        const delta = (time - prevTime) / 2000;
-
-        velocity.x -= velocity.x * 10.0 * delta;
-        velocity.z -= velocity.z * 10.0 * delta;
-
-        velocity.y -= velocity.y * 10.0 * delta;
-
-        direction.z = Number(moveForward) - Number(moveBackward);
-        direction.x = Number(moveRight) - Number(moveLeft);
-        direction.normalize(); // this ensures consistent movements in all directions
-
-        if (moveForward || moveBackward) velocity.z -= direction.z * 2000.0 * delta;
-        if (moveLeft || moveRight) velocity.x -= direction.x * 2000.0 * delta;
-
-        controls.moveRight(-velocity.x * delta);
-        controls.moveForward(-velocity.z * delta);
-
-        // jump fix
-        controls.object.position.y += velocity.y * delta;
-        if (controls.object.position.y < 10) {
-            velocity.y = 0;
-            controls.object.position.y = 10;
-
-            canJump = true;
-        }
-    }
-    if (controls.object.position.x > 100) {
-        controls.object.position.x = 100;
-    } else if (controls.object.position.x < -100) {
-        controls.object.position.x = -100;
-    }
-    if (controls.object.position.z > 0) {
-        controls.object.position.z = -110;
-    } else if (controls.object.position.z < -300) {
-        controls.object.position.z = -400;
-    }
-
-    if (controls.object.position.y > 0) {
-        controls.object.position.y = 50;
-    }
-    prevTime = time;
-    // End First Person Control Animations
-
-    render();
-}
-
-
-
-      // post-processing
+      // post-processing
 
       composer = new EffectComposer(renderer);
       const renderPass = new RenderPass(scene, camera);
@@ -358,89 +307,70 @@ function animate() {
       );
       gui.add(controller, "disable").onChange(onGUIChange);
       
-      
-
-      container.appendChild(renderer.domElement);
-
-      controls = new DragControls([...objects], camera, renderer.domElement);
-      controls.rotateSpeed = 2;
-      controls.addEventListener("drag", render);
-
-      //
-
-      window.addEventListener("resize", onWindowResize);
-
-      document.addEventListener("click", onClick);
-      window.addEventListener("keydown", onKeyDown);
-      window.addEventListener("keyup", onKeyUp);
-
-      render();
+    
 }
 
-function onWindowResize() {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
+// Function to update moving objects, in this case the camera.
+// The render function is trigger at the end to update the canvas.
+function animate() {
+    // Start First Person Control Animations
+    const time = performance.now();
+    if (controls.isLocked === true) {
+        const delta = (time - prevTime) / 2000;
 
-      renderer.setSize(window.innerWidth, window.innerHeight);
+        velocity.x -= velocity.x * 10.0 * delta;
+        velocity.z -= velocity.z * 10.0 * delta;
 
-      render();
+        velocity.y -= velocity.y * 10.0 * delta;
+
+        direction.z = Number(moveForward) - Number(moveBackward);
+        direction.x = Number(moveRight) - Number(moveLeft);
+        direction.normalize(); // this ensures consistent movements in all directions
+
+        if (moveForward || moveBackward) velocity.z -= direction.z * 2000.0 * delta;
+        if (moveLeft || moveRight) velocity.x -= direction.x * 2000.0 * delta;
+
+        controls.moveRight(-velocity.x * delta);
+        controls.moveForward(-velocity.z * delta);
+
+        // jump fix
+        controls.object.position.y += velocity.y * delta;
+        if (controls.object.position.y < 10) {
+            velocity.y = 0;
+            controls.object.position.y = 10;
+
+            canJump = true;
+        }
+    }
+    //if (controls.object.position.x > 100) {
+    //    controls.object.position.x = 100;
+    //} else if (controls.object.position.x < -100) {
+    //    controls.object.position.x = -100;
+    //}
+    //if (controls.object.position.z > 0) {
+    //    controls.object.position.z = -110;
+    //} else if (controls.object.position.z < -300) {
+    //    controls.object.position.z = -400;
+    //}
+//
+    //if (controls.object.position.y > 0) {
+    //    controls.object.position.y = 50;
+    //}
+    prevTime = time;
+    // End First Person Control Animations
+
+    render();
 }
 
-function onKeyDown(event) {
-      enableSelection = event.keyCode === 16 ? true : false;
 
-      if (event.keyCode === 77) {
-            controls.touches.ONE = controls.touches.ONE === THREE.TOUCH.PAN ? THREE.TOUCH.ROTATE : THREE.TOUCH.PAN;
-      }
-}
-
-function onKeyUp() {
-      enableSelection = false;
-}
-
-function onClick(event) {
-      event.preventDefault();
-
-      if (enableSelection === true) {
-            const draggableObjects = controls.objects;
-            draggableObjects.length = 0;
-
-            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-
-            raycaster.setFromCamera(mouse, camera);
-
-            const intersections = raycaster.intersectObjects(objects, true);
-
-            if (intersections.length > 0) {
-                  const object = intersections[0].object;
-
-                  if (group.children.includes(object) === true) {
-                        object.material.emissive.set(0x000000);
-                        scene.attach(object);
-                  } else {
-                        object.material.emissive.set(0xaaaaaa);
-                        group.attach(object);
-                  }
-
-                  controls.transformGroup = true;
-                  draggableObjects.push(group);
-            }
-
-            if (group.children.length === 0) {
-                  controls.transformGroup = false;
-                  draggableObjects.push(...objects);
-            }
-      }
-
-      render();
-}
 
 
 
 // Function to render the scene using the camera.
 function render() {
-    renderer.render(scene, camera);
+    
+
+    composer.render(scene, camera);
 }
 
 // Function to generate text shapes
