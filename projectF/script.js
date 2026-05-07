@@ -44,7 +44,7 @@ const direction = new THREE.Vector3();
 
 // Variables for Room
 let font;
-let text = "Objects in Hiding";
+
 let textGeo;
 let materials;
 let textMesh1;
@@ -59,6 +59,8 @@ let timer, stats;
 let enableSelection = false;
 
 let video1;
+let video3;
+
 
 
 // Run the "init" function which is like "setup" in p5.
@@ -187,28 +189,47 @@ async function init() {
     //video.muted = false;
     //video.play();
     //
+    
+    //screen 1
+    
     const video1 = document.getElementById("video1");
     video1.addEventListener("play", function() {
         this.currentTime = 0;
     });
     
+        
     const videoTexture1 = new THREE.VideoTexture(video1);
- 
     videoTexture1.colorSpace = THREE.SRGBColorSpace;
-    
-    const screenGeometry = new THREE.PlaneGeometry (100,100);
-
+    const screenGeometry = new THREE.PlaneGeometry (50,50);
     const screenMaterial = new THREE.MeshBasicMaterial({
     map: videoTexture1
         
     });
     
     const screen1 = new THREE.Mesh(screenGeometry, screenMaterial);
-    screen1.position.set(0,0, 500);
+    screen1.position.set(0,0, 100);
     screen1.rotation.y = Math.PI;
     
-    
     scene.add(screen1);
+    
+    //screen2
+    
+      const video3 = document.getElementById("video3");
+    video3.addEventListener("play", function() {
+        this.currentTime = 0;
+    });
+    const videoTexture3 = new THREE.VideoTexture(video3);
+    videoTexture3.colorSpace = THREE.SRGBColorSpace;
+    const screenGeometry3 = new THREE.PlaneGeometry (50,50);
+    const screenMaterial3 = new THREE.MeshBasicMaterial({
+    map: videoTexture3
+        
+    });
+    const screen3 = new THREE.Mesh(screenGeometry3, screenMaterial3);
+    screen3.position.set(0,0,-100);
+   
+    
+    scene.add(screen3);
     
 
 //https://www.youtube.com/watch?v=d1sr2oWnxus&t=66s < CUBE MATERIAL CODE CREDITS
@@ -337,7 +358,7 @@ function animate() {
         controls.object.position.y += velocity.y * delta;
         if (controls.object.position.y < 10) {
             velocity.y = 0;
-            controls.object.position.y = 10;
+            controls.object.position.y = 0;
 
             canJump = true;
         }
