@@ -1,7 +1,4 @@
-@font-face {
- font-family: 'Dreamer';
- src: url("./DreamerTM-Regular.ttf") format('truetype');
-}
+
 
 body {
   background: black;
@@ -20,7 +17,7 @@ main {
 }
 
 h1 {
-  font-family: "Dreamer", Georgia;
+  font-family: "Comic Sans", Georgia;
   font-optical-sizing: auto;
   font-weight: 300;
   font-style: normal;
@@ -55,7 +52,7 @@ h2 {
 }
 
 p, ul {
-  font-family: "Dreamer", sans-serif;
+  font-family: "Comic Sans", sans-serif;
   font-optical-sizing: auto;
   font-weight: 400;
   font-style: normal;
@@ -73,6 +70,7 @@ canvas {
   display: block;
   margin: auto;
   /*padding-bottom: 20px;*/
+
 }
 
 #blocker {

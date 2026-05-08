@@ -59,8 +59,18 @@ let timer, stats;
 let enableSelection = false;
 
 let video1;
+let video2;
 let video3;
-
+let video19;
+let video5;
+let video9;
+let video7;
+let video18;
+let video14;
+let video15;
+let video10;
+let video16;
+//let video8;
 
 
 // Run the "init" function which is like "setup" in p5.
@@ -100,7 +110,20 @@ async function init() {
 
     instructions.addEventListener("click", function () {
         controls.lock();
+        
+        //video.play
         video1.play();
+        video3.play();
+        video2.play();
+        video19.play();
+        video5.play();
+        video9.play();
+        video7.play();
+        video18.play();
+        video14.play();
+        video15.play();
+        video10.play();
+        video16.play();
     });
 
     controls.addEventListener("lock", function () {
@@ -187,11 +210,12 @@ async function init() {
     //video.src = './assets/video1.mp4';
     //video.loop = true;
     //video.muted = false;
-    //video.play();
+
     //
     
     //screen 1
     
+
     const video1 = document.getElementById("video1");
     video1.addEventListener("play", function() {
         this.currentTime = 0;
@@ -199,41 +223,245 @@ async function init() {
     
         
     const videoTexture1 = new THREE.VideoTexture(video1);
-    videoTexture1.colorSpace = THREE.SRGBColorSpace;
-    const screenGeometry = new THREE.PlaneGeometry (50,50);
+
+    const screenGeometry = new THREE.PlaneGeometry (15,15);
     const screenMaterial = new THREE.MeshBasicMaterial({
     map: videoTexture1
         
     });
     
     const screen1 = new THREE.Mesh(screenGeometry, screenMaterial);
-    screen1.position.set(0,0, 100);
+    screen1.position.set(0,0, 30);
     screen1.rotation.y = Math.PI;
     
     scene.add(screen1);
     
+    
+    
     //screen2
     
-      const video3 = document.getElementById("video3");
+     const video2 = document.getElementById("video2");
+    video2.addEventListener("play", function() {
+        this.currentTime = 0;
+    });
+    const videoTexture2 = new THREE.VideoTexture(video2);
+    
+    const screenGeometry2 = new THREE.PlaneGeometry (15,15);
+    const screenMaterial2 = new THREE.MeshBasicMaterial({
+    map: videoTexture2
+        
+    });
+    const screen2 = new THREE.Mesh(screenGeometry2, screenMaterial2);
+    screen2.position.set(0,0,-30);
+   
+    
+    scene.add(screen2);
+    
+
+    
+    //screen3
+    
+     const video3 = document.getElementById("video3");
     video3.addEventListener("play", function() {
         this.currentTime = 0;
     });
     const videoTexture3 = new THREE.VideoTexture(video3);
-    videoTexture3.colorSpace = THREE.SRGBColorSpace;
-    const screenGeometry3 = new THREE.PlaneGeometry (50,50);
+   
+    const screenGeometry3 = new THREE.PlaneGeometry (15,15);
     const screenMaterial3 = new THREE.MeshBasicMaterial({
     map: videoTexture3
         
     });
     const screen3 = new THREE.Mesh(screenGeometry3, screenMaterial3);
-    screen3.position.set(0,0,-100);
-   
+    screen3.position.set(0,15,30);
+   screen3.rotation.y = Math.PI;
     
     scene.add(screen3);
     
 
-//https://www.youtube.com/watch?v=d1sr2oWnxus&t=66s < CUBE MATERIAL CODE CREDITS
-    // TV
+    
+    
+    //screen4
+    
+     const video19 = document.getElementById("video19");
+    video19.addEventListener("play", function() {
+        this.currentTime = 0;
+    });
+    const videoTexture19 = new THREE.VideoTexture(video19);
+    
+    const screenGeometry19 = new THREE.PlaneGeometry (15,15);
+    const screenMaterial19 = new THREE.MeshBasicMaterial({
+    map: videoTexture19 
+        
+    });
+    const screen19 = new THREE.Mesh(screenGeometry19, screenMaterial19);
+    screen19.position.set(0,15,-30);
+  
+    
+    scene.add(screen19);
+    
+    //screen 5
+         const video5 = document.getElementById("video5");
+    video5.addEventListener("play", function() {
+        this.currentTime = 0;
+    });
+    const videoTexture5 = new THREE.VideoTexture(video5);
+    
+    const screenGeometry5 = new THREE.PlaneGeometry (15,15);
+    const screenMaterial5 = new THREE.MeshBasicMaterial({
+    map: videoTexture5
+        
+    });
+    const screen5 = new THREE.Mesh(screenGeometry5, screenMaterial5);
+    screen5.position.set(17,15,-13);
+  screen5.rotation.y = -Math.PI/2;
+    
+    scene.add(screen5);
+    
+    //reflect of screen 5 but screen 14
+        const video14 = document.getElementById("video14");
+    video14.addEventListener("play", function() {
+        this.currentTime = 0;
+    });
+    const videoTexture14 = new THREE.VideoTexture(video14);
+    
+    const screenGeometry14 = new THREE.PlaneGeometry (15,15);
+    const screenMaterial14 = new THREE.MeshBasicMaterial({
+    map: videoTexture14
+        
+    });
+    const screen14 = new THREE.Mesh(screenGeometry14, screenMaterial14);
+    screen14.position.set(-17,15,-13);
+  screen14.rotation.y = Math.PI/2;
+    
+    scene.add(screen14);
+    
+     //screen 14 but below on left screen 
+        const video15 = document.getElementById("video15");
+    video15.addEventListener("play", function() {
+        this.currentTime = 0;
+    });
+    const videoTexture15 = new THREE.VideoTexture(video15);
+    
+    const screenGeometry15 = new THREE.PlaneGeometry (15,15);
+    const screenMaterial15 = new THREE.MeshBasicMaterial({
+    map: videoTexture15
+        
+    });
+    const screen15 = new THREE.Mesh(screenGeometry15, screenMaterial15);
+    screen15.position.set(-17,0,-13);
+    screen15.rotation.y = Math.PI/2;
+    
+    scene.add(screen15);
+    
+    
+     //screen 9
+         const video9 = document.getElementById("video9");
+    video9.addEventListener("play", function() {
+        this.currentTime = 0;
+    });
+    const videoTexture9 = new THREE.VideoTexture(video9);
+    
+    const screenGeometry9 = new THREE.PlaneGeometry (15,15);
+    const screenMaterial9 = new THREE.MeshBasicMaterial({
+    map: videoTexture9
+        
+    });
+    const screen9 = new THREE.Mesh(screenGeometry9, screenMaterial9);
+    screen9.position.set(-12,15,-25);
+    screen9.rotation.y = Math.PI/4;
+    
+    scene.add(screen9);
+    
+    
+    
+     //screen 9 but below on left and it's screen 10
+         const video10 = document.getElementById("video10");
+    video10.addEventListener("play", function() {
+        this.currentTime = 0;
+    });
+    const videoTexture10 = new THREE.VideoTexture(video10);
+    
+    const screenGeometry10 = new THREE.PlaneGeometry (15,15);
+    const screenMaterial10 = new THREE.MeshBasicMaterial({
+    map: videoTexture10
+        
+    });
+    const screen10 = new THREE.Mesh(screenGeometry10, screenMaterial10);
+    screen10.position.set(-12,0,-25);
+    screen10.rotation.y = Math.PI/4;
+    
+    scene.add(screen10);
+    
+      
+     //screen 7
+         const video7 = document.getElementById("video7");
+    video7.addEventListener("play", function() {
+        this.currentTime = 0;
+        
+    });
+    const videoTexture7 = new THREE.VideoTexture(video7);
+    videoTexture7.colorSpace = THREE.SRGBColorSpace;
+    const screenGeometry7 = new THREE.PlaneGeometry (15,15);
+    const screenMaterial7 = new THREE.MeshBasicMaterial({
+    map: videoTexture7
+
+        
+    });
+    const screen7 = new THREE.Mesh(screenGeometry7, screenMaterial7);
+    screen7.position.set(12,15,-25);
+    screen7.rotation.y = -Math.PI/4;
+    
+    scene.add(screen7);
+    
+          
+     //screen 7 but below and its 16
+         const video16 = document.getElementById("video16");
+    video16.addEventListener("play", function() {
+        this.currentTime = 0;
+        
+    });
+    const videoTexture16 = new THREE.VideoTexture(video16);
+   
+    const screenGeometry16 = new THREE.PlaneGeometry (15,15);
+    const screenMaterial16 = new THREE.MeshBasicMaterial({
+    map: videoTexture16
+
+        
+    });
+    const screen16 = new THREE.Mesh(screenGeometry16, screenMaterial16);
+    screen16.position.set(12,0,-25);
+    screen16.rotation.y = -Math.PI/4;
+    
+    scene.add(screen16);
+    
+        //screen 18
+         const video18 = document.getElementById("video18");
+    video18.addEventListener("play", function() {
+        this.currentTime = 0;
+        
+    });
+    const videoTexture18 = new THREE.VideoTexture(video18);
+    videoTexture18.colorSpace = THREE.SRGBColorSpace;
+    const screenGeometry18 = new THREE.PlaneGeometry (15,15);
+    const screenMaterial18 = new THREE.MeshBasicMaterial({
+    map: videoTexture18
+
+        
+    });
+    const screen18 = new THREE.Mesh(screenGeometry18, screenMaterial18);
+    screen18.position.set(12,15,-25);
+    screen18.rotation.y = -Math.PI/4;
+    
+    scene.add(screen7);
+    
+    
+    
+    
+    
+    
+    
+
     
     
  
@@ -246,15 +474,15 @@ async function init() {
     scene.add(mesh2);
 
     // lights
-    const dirLight1 = new THREE.DirectionalLight(0xffffff, 2);
+    const dirLight1 = new THREE.DirectionalLight(0xffffff, 8);
     dirLight1.position.set(40, 40, -100);
     scene.add(dirLight1);
 
-    const dirLight2 = new THREE.DirectionalLight(0xffffff, 5);
+    const dirLight2 = new THREE.DirectionalLight(0xffffff, 10);
     dirLight2.position.set(0, 0, -300);
     scene.add(dirLight2);
 
-    const ambientLight = new THREE.AmbientLight(0x4f00ff);
+    const ambientLight = new THREE.AmbientLight(0xff00f8);
     scene.add(ambientLight);
     
       // post-processing
@@ -284,6 +512,7 @@ async function init() {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
       };
+    
 
       // GUI
 
